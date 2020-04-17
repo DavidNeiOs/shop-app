@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Button } from "react-native";
 import { Product } from "../../store/product/types";
 import { Colors } from "../../constants/colors";
+import { TouchableButton } from "../TouchableButton";
 
 interface ProductItemProps {
   product: Product;
@@ -16,24 +17,30 @@ export const ProductItem: React.FC<ProductItemProps> = ({
 }) => {
   return (
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: product.imageUrl }} />
-      </View>
-      <View style={styles.details}>
-        <Text style={styles.title}>{product.title}</Text>
-        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-      </View>
-      <View style={styles.actions}>
-        <Button
-          color={Colors.primary}
-          title="View details"
-          onPress={onViewDetail}
-        />
-        <Button
-          color={Colors.primary}
-          title="Add to cart"
-          onPress={onAddToCart}
-        />
+      <View style={styles.touchable}>
+        <TouchableButton onPress={onViewDetail} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: product.imageUrl }} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title}>{product.title}</Text>
+              <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.actions}>
+              <Button
+                color={Colors.primary}
+                title="View details"
+                onPress={onViewDetail}
+              />
+              <Button
+                color={Colors.primary}
+                title="Add to cart"
+                onPress={onAddToCart}
+              />
+            </View>
+          </View>
+        </TouchableButton>
       </View>
     </View>
   );
@@ -50,6 +57,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 300,
     margin: 20,
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: "hidden",
   },
   imageContainer: {
     width: "100%",
