@@ -7,6 +7,7 @@ import { RouteProp } from "@react-navigation/native";
 
 import { ProductsOverviewScreen } from "../screens/ProductsOverViewScreen";
 import { ProductDetailsScreen } from "../screens/ProductDetailsScreen";
+import { CartScreen } from "../screens/CartScreen";
 import { Colors } from "../constants/colors";
 
 export type ProductsParamList = {
@@ -15,6 +16,7 @@ export type ProductsParamList = {
     productId: string;
     productTitle: string;
   };
+  Cart: undefined;
 };
 
 export type ProductsNavProps<T extends keyof ProductsParamList> = {
@@ -50,6 +52,11 @@ export const ShopNavigator: React.FC<{}> = ({}) => {
           name="ProductDetails"
           options={({ route }) => ({ headerTitle: route.params.productTitle })}
           component={ProductDetailsScreen}
+        />
+        <Stack.Screen
+          name="Cart"
+          options={{ headerTitle: "Your Cart" }}
+          component={CartScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
