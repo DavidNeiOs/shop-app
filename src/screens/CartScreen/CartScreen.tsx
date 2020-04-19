@@ -6,12 +6,14 @@ import { useTypedSelector } from "../../store";
 import { removeFromCart } from "../../store/cart/actions";
 import { Colors } from "../../constants/colors";
 import { CartItem } from "../../components/CartItem";
+import { addOrder } from "../../store/orders/actions";
+import { OrderItem } from "../../store/orders/types";
 interface CartScreenProps {}
 
 export const CartScreen: React.FC<CartScreenProps> = ({}) => {
   const cartTotalAmount = useTypedSelector((state) => state.cart.totalAmaount);
   const cartItems = useTypedSelector((state) => {
-    const itemsArr = [];
+    const itemsArr: OrderItem[] = [];
     for (const key in state.cart.items) {
       const { title, price, quantity, sum } = state.cart.items[key];
       itemsArr.push({
@@ -37,7 +39,9 @@ export const CartScreen: React.FC<CartScreenProps> = ({}) => {
         </Text>
         <Button
           title="Order Now"
-          onPress={() => {}}
+          onPress={() => {
+            dispatch(addOrder(cartItems, cartTotalAmount));
+          }}
           color={Colors.accent}
           disabled={!cartItems.length}
         />
