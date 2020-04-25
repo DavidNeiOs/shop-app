@@ -1,24 +1,22 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Button } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { Product } from "../../store/product/types";
-import { Colors } from "../../constants/colors";
 import { TouchableButton } from "../TouchableButton";
 
 interface ProductItemProps {
   product: Product;
-  onViewDetail: () => void;
-  onAddToCart: () => void;
+  onSelect: () => void;
 }
 
 export const ProductItem: React.FC<ProductItemProps> = ({
   product,
-  onViewDetail,
-  onAddToCart,
+  onSelect,
+  children,
 }) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableButton onPress={onViewDetail} useForeground>
+        <TouchableButton onPress={onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: product.imageUrl }} />
@@ -27,18 +25,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({
               <Text style={styles.title}>{product.title}</Text>
               <Text style={styles.price}>${product.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.actions}>
-              <Button
-                color={Colors.primary}
-                title="View details"
-                onPress={onViewDetail}
-              />
-              <Button
-                color={Colors.primary}
-                title="Add to cart"
-                onPress={onAddToCart}
-              />
-            </View>
+            <View style={styles.actions}>{children}</View>
           </View>
         </TouchableButton>
       </View>

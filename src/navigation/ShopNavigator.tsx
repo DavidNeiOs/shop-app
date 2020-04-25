@@ -1,6 +1,8 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
+
+import { AdminNavigator } from "./AdminNavigator";
 import { ProductNavigator } from "./ProductNavigator";
 import { OrdersNavigator } from "./OrdersNavigator";
 import { Colors } from "../constants/colors";
@@ -10,6 +12,7 @@ import { Platform } from "react-native";
 export type ShopParamList = {
   Orders: undefined;
   Products: undefined;
+  Admin: undefined;
 };
 
 const Drawer = createDrawerNavigator<ShopParamList>();
@@ -42,6 +45,19 @@ export const ShopNavigator: React.FC<{}> = ({}) => {
             drawerIcon: (props) => (
               <Ionicons
                 name={Platform.OS === "android" ? "md-list" : "ios-list"}
+                size={23}
+                color={props.color}
+              />
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="Admin"
+          component={AdminNavigator}
+          options={{
+            drawerIcon: (props) => (
+              <Ionicons
+                name={Platform.OS === "android" ? "md-create" : "ios-create"}
                 size={23}
                 color={props.color}
               />
