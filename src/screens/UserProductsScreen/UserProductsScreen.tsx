@@ -7,7 +7,6 @@ import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { ProductItem } from "../../components/ProductItem";
 import { useTypedSelector } from "../../store";
 import { AdminNavProps } from "../../navigation/AdminNavigator";
-import reactotron from "../../../ReactotronConfig";
 import { Colors } from "../../constants/colors";
 import { deleteProduct } from "../../store/product/actions";
 
@@ -18,8 +17,6 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
 }) => {
   const dispatch = useDispatch();
   const userProducts = useTypedSelector((state) => state.products.userProducts);
-  //@ts-ignore
-  reactotron.log(userProducts);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -32,14 +29,38 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
           />
         </HeaderButtons>
       ),
+      headerRight: () => (
+        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+          <Item
+            title="Add"
+            iconName={Platform.OS === "android" ? "md-create" : "ios-create"}
+            onPress={() => navigation.navigate("EditProduct")}
+          />
+        </HeaderButtons>
+      ),
     });
   }, [navigation]);
+
+  const handleSelect = (id: string) => {
+    navigation.navigate("EditProduct", { productId: id });
+  };
   return (
     <FlatList
       data={userProducts}
       renderItem={({ item }) => (
-        <ProductItem product={item} onSelect={() => {}}>
-          <Button color={Colors.primary} title="Edit" onPress={() => {}} />
+        <ProductItem
+          product={item}
+          onSelect={() => {
+            handleSelect(item.id);
+          }}
+        >
+          <Button
+            color={Colors.primary}
+            title="Edit"
+            onPress={() => {
+              handleSelect(item.id);
+            }}
+          />
           <Button
             color={Colors.primary}
             title="Delete"
