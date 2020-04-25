@@ -1,4 +1,4 @@
-import { ProductsState, ProductActionTypes, ADD_PRODUCT } from "./types";
+import { ProductsState, ProductActionTypes, ADD_PRODUCT, DELETE_PRODUCT } from "./types";
 import PRODUCTS from "../../data/products"
 
 const initialState: ProductsState = {
@@ -12,6 +12,12 @@ export default (state = initialState, action: ProductActionTypes) => {
       return {
         availableProducts: [...state.availableProducts, action.payload],
         userProducts: [...state.userProducts, action.payload]
+      }
+    case DELETE_PRODUCT:
+      return {
+        ...state,
+        userProducts: state.userProducts.filter(prod => prod.id !== action.pid),
+        availableProducts: state.availableProducts.filter(prod => prod.id !== action.pid)
       }
     default:
       return state;

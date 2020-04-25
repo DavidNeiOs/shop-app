@@ -1,6 +1,7 @@
 import React from "react";
 import { Platform, FlatList, Button } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useDispatch } from "react-redux";
 
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { ProductItem } from "../../components/ProductItem";
@@ -8,12 +9,14 @@ import { useTypedSelector } from "../../store";
 import { AdminNavProps } from "../../navigation/AdminNavigator";
 import reactotron from "../../../ReactotronConfig";
 import { Colors } from "../../constants/colors";
+import { deleteProduct } from "../../store/product/actions";
 
 interface UserProductsScreenProps extends AdminNavProps<"UserProduct"> {}
 
 export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
   navigation,
 }) => {
+  const dispatch = useDispatch();
   const userProducts = useTypedSelector((state) => state.products.userProducts);
   //@ts-ignore
   reactotron.log(userProducts);
@@ -37,7 +40,13 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
       renderItem={({ item }) => (
         <ProductItem product={item} onSelect={() => {}}>
           <Button color={Colors.primary} title="Edit" onPress={() => {}} />
-          <Button color={Colors.primary} title="Delete" onPress={() => {}} />
+          <Button
+            color={Colors.primary}
+            title="Delete"
+            onPress={() => {
+              dispatch(deleteProduct(item.id));
+            }}
+          />
         </ProductItem>
       )}
     />
