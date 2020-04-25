@@ -1,5 +1,3 @@
-import { Item as CartItem } from "../cart/types";
-
 export interface OrderItem {
   productId: string
   productTitle: string

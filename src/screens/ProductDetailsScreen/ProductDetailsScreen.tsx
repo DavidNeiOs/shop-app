@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 
-import { ProductsNavProps } from "../../navigation/ShopNavigator";
+import { ProductsNavProps } from "../../navigation/ProductNavigator";
 import { useTypedSelector } from "../../store";
 import { Colors } from "../../constants/colors";
 import { addToCart } from "../../store/cart/actions";
