@@ -1,4 +1,5 @@
 import { CartState, ADD_TO_CART, CartActionTypes, Item, REMOVE_FROM_CART } from "./types";
+import { ADD_ORDER } from "../orders/types";
 
 const initialState: CartState = {
   items: {},
@@ -37,12 +38,13 @@ export default (state = initialState, action: CartActionTypes) => {
         updatedCartItems = { ...state.items };
         delete updatedCartItems[action.pid]
       }
-
       return {
         ...state,
         items: updatedCartItems,
         totalAmaount: state.totalAmaount - selectedItem.price
       }
+    case ADD_ORDER:
+      return initialState;
     default:
       return state
   }

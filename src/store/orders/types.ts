@@ -20,7 +20,7 @@ export interface OrdersState {
 // Actions
 export const ADD_ORDER = "ADD_ORDER"
 
-interface AddOrderAction {
+export interface AddOrderAction {
   type: typeof ADD_ORDER
   orderData: {
     items: OrderItem[],

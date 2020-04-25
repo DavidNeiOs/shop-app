@@ -5,7 +5,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { useTypedSelector } from "../../store";
 import { OrdersNavProps } from "../../navigation/OrdersNavigator";
-
+import { OrderItem } from "../../components/OrderItem";
 interface OrdersScreenProps extends OrdersNavProps<"Orders"> {}
 
 export const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
@@ -27,7 +27,13 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
   return (
     <FlatList
       data={orders}
-      renderItem={(itemData) => <Text>{itemData.item.totalAmount}</Text>}
+      renderItem={({ item }) => (
+        <OrderItem
+          amount={item.totalAmount}
+          date={item.date}
+          items={item.items}
+        />
+      )}
     />
   );
 };

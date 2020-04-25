@@ -1,4 +1,5 @@
 import { Product } from "../product/types"
+import { AddOrderAction } from "../orders/types"
 
 export interface Item {
   title: string,
@@ -30,4 +31,4 @@ interface RemoveFromCart {
   pid: string  
 }
 
-export type CartActionTypes = AddToCartAction | RemoveFromCart
+export type CartActionTypes = AddToCartAction | RemoveFromCart | AddOrderAction

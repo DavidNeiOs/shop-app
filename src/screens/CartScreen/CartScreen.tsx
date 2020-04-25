@@ -57,6 +57,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({}) => {
             onRemove={() => {
               dispatch(removeFromCart(item.productId));
             }}
+            deletable
           />
         )}
       />
