@@ -8,6 +8,8 @@ import { Colors } from "../../constants/colors";
 import { CartItem } from "../../components/CartItem";
 import { addOrder } from "../../store/orders/actions";
 import { OrderItem } from "../../store/orders/types";
+import { Card } from "../../components/UI/Card";
+
 interface CartScreenProps {}
 
 export const CartScreen: React.FC<CartScreenProps> = ({}) => {
@@ -32,7 +34,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({}) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.summary}>
+      <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{" "}
           <Text style={styles.amount}>
@@ -47,7 +49,7 @@ export const CartScreen: React.FC<CartScreenProps> = ({}) => {
           color={Colors.accent}
           disabled={!cartItems.length}
         />
-      </View>
+      </Card>
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.productId}
@@ -77,13 +79,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     margin: 20,
     padding: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: "white",
   },
   summaryText: {
     fontFamily: "open-sans-bold",

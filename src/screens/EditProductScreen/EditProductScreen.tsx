@@ -39,6 +39,7 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
     } else {
       dispatch(createProduct(title, description, imageUrl, Number(price) || 0));
     }
+    navigation.goBack();
   }, [navigation, title, description, imageUrl, price]);
 
   React.useLayoutEffect(() => {
