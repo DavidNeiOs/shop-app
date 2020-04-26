@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,13 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { AdminNavProps } from "../../navigation/AdminNavigator";
 import { useTypedSelector } from "../../store";
+import { createProduct, updateProduct } from "../../store/product/actions";
 
 interface EditProductScreenProps extends AdminNavProps<"EditProduct"> {}
 
@@ -19,10 +21,9 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
   route,
   navigation,
 }) => {
+  const prodId = route.params?.productId;
   const editedProduct = useTypedSelector((state) =>
-    state.products.userProducts.find(
-      (prod) => prod.id === route.params?.productId
-    )
+    state.products.userProducts.find((prod) => prod.id === prodId)
   );
   const [title, setTitle] = useState(editedProduct?.title || "");
   const [imageUrl, setImageUrl] = useState(editedProduct?.imageUrl || "");
@@ -30,6 +31,15 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
   const [description, setDescription] = useState(
     editedProduct?.description || ""
   );
+  const dispatch = useDispatch();
+
+  const handleSubmit = useCallback(() => {
+    if (editedProduct) {
+      dispatch(updateProduct(prodId!, title, description, imageUrl));
+    } else {
+      dispatch(createProduct(title, description, imageUrl, Number(price) || 0));
+    }
+  }, [navigation, title, description, imageUrl, price]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -40,12 +50,12 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
             iconName={
               Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
             }
-            onPress={() => {}}
+            onPress={handleSubmit}
           />
         </HeaderButtons>
       ),
     });
-  }, [navigation]);
+  }, [navigation, handleSubmit]);
 
   return (
     <ScrollView>
@@ -55,7 +65,9 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={(text) => setTitle(text)}
+            onChangeText={(text) => {
+              setTitle(text);
+            }}
           />
         </View>
         <View style={styles.formControl}>
