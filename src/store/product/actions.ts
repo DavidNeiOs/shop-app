@@ -9,6 +9,8 @@ import {
   UPDATE_PRODUCT,
   SET_PRODUCTS,
   SetProductsAction,
+  UpdateProductAction,
+  DeleteProductAction,
 } from "./types";
 import Product from "../../models/product";
 
@@ -19,12 +21,17 @@ export function addProduct(product: IProduct): ProductActionTypes {
   };
 }
 
-export function deleteProduct(id: string): ProductActionTypes {
-  return {
-    type: DELETE_PRODUCT,
-    pid: id,
-  };
-}
+export const deleteProduct = (id: string) => async (
+  dispatch: ThunkDispatch<{}, {}, DeleteProductAction>
+) => {
+  await fetch(`https://rn-complete-4c566.firebaseio.com/products/${id}.json`, {
+    method: "DELETE",
+  }),
+    dispatch({
+      type: DELETE_PRODUCT,
+      pid: id,
+    });
+};
 
 export const createProduct = (
   title: string,
@@ -62,13 +69,25 @@ export const createProduct = (
   });
 };
 
-export function updateProduct(
+export const updateProduct = (
   id: string,
   title: string,
   description: string,
   imageUrl: string
-) {
-  return {
+) => async (dispatch: ThunkDispatch<{}, {}, UpdateProductAction>) => {
+  await fetch(`https://rn-complete-4c566.firebaseio.com/products/${id}.json`, {
+    method: "PATCH",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      imageUrl,
+    }),
+  });
+
+  dispatch({
     type: UPDATE_PRODUCT,
     payload: {
       id,
@@ -76,8 +95,8 @@ export function updateProduct(
       description,
       imageUrl,
     },
-  };
-}
+  });
+};
 
 export const fetchProducts = () => async (
   dispatch: ThunkDispatch<{}, {}, SetProductsAction>

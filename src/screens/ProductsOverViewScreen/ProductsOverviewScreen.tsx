@@ -70,6 +70,11 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
     loadProducts();
   }, [loadProducts]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", loadProducts);
+    return unsubscribe;
+  }, [loadProducts]);
+
   const handleSelect = (id: string, title: string) => {
     navigation.navigate("ProductDetails", {
       productId: id,
