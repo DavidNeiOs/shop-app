@@ -26,6 +26,7 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
   navigation,
 }: ProductsOverviewScreenProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const products = useTypedSelector(
     (state) => state.products.availableProducts
@@ -57,18 +58,21 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
 
   const loadProducts = useCallback(async () => {
     setError(null);
-    setIsLoading(true);
+    setIsRefreshing(true);
     try {
       await dispatch(fetchProducts());
     } catch (err) {
       setError(err.message);
     } finally {
-      setIsLoading(false);
+      setIsRefreshing(false);
     }
   }, [dispatch]);
 
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
   }, [loadProducts]);
 
   useEffect(() => {
@@ -114,6 +118,8 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       renderItem={(itemData) => (
         <ProductItem
