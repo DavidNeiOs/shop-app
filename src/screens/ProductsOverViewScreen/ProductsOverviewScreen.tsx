@@ -14,6 +14,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useTypedSelector } from "../../store";
 import { ProductsNavProps } from "../../navigation/ProductNavigator";
 import { ProductItem } from "../../components/ProductItem";
+import { Center } from "../../components/UI/Center";
 import { addToCart } from "../../store/cart/actions";
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { Colors } from "../../constants/colors";
@@ -84,30 +85,30 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
 
   if (error) {
     return (
-      <View style={styles.centered}>
+      <Center>
         <Text>An error occurred!</Text>
         <Button
           title="Try again"
           onPress={loadProducts}
           color={Colors.primary}
         />
-      </View>
+      </Center>
     );
   }
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
+      <Center>
         <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
+      </Center>
     );
   }
 
   if (!isLoading && products.length === 0) {
     return (
-      <View style={styles.centered}>
+      <Center>
         <Text>No products found. Maybe start by adding some!</Text>
-      </View>
+      </Center>
     );
   }
 
@@ -140,7 +141,3 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
     />
   );
 };
-
-const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
-});

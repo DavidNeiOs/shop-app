@@ -1,4 +1,10 @@
-import React, { useCallback, useReducer, Reducer } from "react";
+import React, {
+  useState,
+  useCallback,
+  useReducer,
+  Reducer,
+  useEffect,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -6,11 +12,13 @@ import {
   Platform,
   Alert,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
+import { Center } from "../../components/UI/Center";
 import { AdminNavProps } from "../../navigation/AdminNavigator";
 import { Input } from "../../components/Input";
 import { useTypedSelector } from "../../store";
@@ -20,6 +28,7 @@ import {
   FORM_INPUT_UPDATE,
   State as FormState,
 } from "./ReducerTypes";
+import { Colors } from "../../constants/colors";
 
 const formReducer: Reducer<FormState, FormActionTypes> = (state, action) => {
   if (action.type === FORM_INPUT_UPDATE) {
@@ -50,6 +59,8 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
   route,
   navigation,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
   const prodId = route.params?.productId;
   const editedProduct = useTypedSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
@@ -71,7 +82,13 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
     formIsValid: editedProduct ? true : false,
   });
 
-  const handleSubmit = useCallback(() => {
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error ocurred!", error, [{ text: "Okay" }]);
+    }
+  }, [error]);
+
+  const handleSubmit = useCallback(async () => {
     const { inputValues, formIsValid } = formState;
     if (!formIsValid) {
       Alert.alert("Wrong input!", "Please check the errors in the form.", [
@@ -79,26 +96,34 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
       ]);
       return;
     }
-    if (editedProduct) {
-      dispatch(
-        updateProduct(
-          prodId!,
-          inputValues.title,
-          inputValues.description,
-          inputValues.imageUrl
-        )
-      );
-    } else {
-      dispatch(
-        createProduct(
-          inputValues.title,
-          inputValues.description,
-          inputValues.imageUrl,
-          Number(inputValues.price) || 0
-        )
-      );
+    setError(null);
+    setIsLoading(true);
+    try {
+      if (editedProduct) {
+        await dispatch(
+          updateProduct(
+            prodId!,
+            inputValues.title,
+            inputValues.description,
+            inputValues.imageUrl
+          )
+        );
+      } else {
+        await dispatch(
+          createProduct(
+            inputValues.title,
+            inputValues.description,
+            inputValues.imageUrl,
+            Number(inputValues.price) || 0
+          )
+        );
+      }
+      setIsLoading(false);
+      navigation.goBack();
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
     }
-    navigation.goBack();
   }, [navigation, formState]);
 
   React.useLayoutEffect(() => {
@@ -130,6 +155,14 @@ export const EditProductScreen: React.FC<EditProductScreenProps> = ({
     },
     [formDispatch]
   );
+
+  if (isLoading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </Center>
+    );
+  }
 
   return (
     <KeyboardAvoidingView

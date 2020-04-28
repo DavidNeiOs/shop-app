@@ -24,13 +24,20 @@ export function addProduct(product: IProduct): ProductActionTypes {
 export const deleteProduct = (id: string) => async (
   dispatch: ThunkDispatch<{}, {}, DeleteProductAction>
 ) => {
-  await fetch(`https://rn-complete-4c566.firebaseio.com/products/${id}.json`, {
-    method: "DELETE",
-  }),
-    dispatch({
-      type: DELETE_PRODUCT,
-      pid: id,
-    });
+  const response = await fetch(
+    `https://rn-complete-4c566.firebaseio.com/products/${id}.json`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Something went wrong");
+  }
+  dispatch({
+    type: DELETE_PRODUCT,
+    pid: id,
+  });
 };
 
 export const createProduct = (
@@ -75,17 +82,24 @@ export const updateProduct = (
   description: string,
   imageUrl: string
 ) => async (dispatch: ThunkDispatch<{}, {}, UpdateProductAction>) => {
-  await fetch(`https://rn-complete-4c566.firebaseio.com/products/${id}.json`, {
-    method: "PATCH",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({
-      title,
-      description,
-      imageUrl,
-    }),
-  });
+  const response = await fetch(
+    `https://rn-complete-4c566.firebaseio.com/products/${id}.json`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        imageUrl,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Something went wrong");
+  }
 
   dispatch({
     type: UPDATE_PRODUCT,
