@@ -1,28 +1,27 @@
-import { createStore, combineReducers, compose } from "redux";
-import { TypedUseSelectorHook, useSelector } from "react-redux"
+import { createStore, combineReducers, compose, applyMiddleware } from "redux";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import thunk from "redux-thunk";
 
-import Reactotron from "../../ReactotronConfig"
+import Reactotron from "../../ReactotronConfig";
 import productsReducer from "./product/reducer";
-import cartReducer from "./cart/reducers"
-import ordersReducer from "./orders/reducer"
+import cartReducer from "./cart/reducers";
+import ordersReducer from "./orders/reducer";
 
 const rootReducer = combineReducers({
   products: productsReducer,
   cart: cartReducer,
-  orders: ordersReducer
-})
+  orders: ordersReducer,
+});
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
-export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-let middleware: any
-if(__DEV__) {
-  middleware = compose(Reactotron.createEnhancer!())
+let middleware;
+if (__DEV__) {
+  middleware = compose(applyMiddleware(thunk), Reactotron.createEnhancer!());
 } else {
-  middleware = compose()
+  middleware = compose(applyMiddleware(thunk));
 }
 
-
-export const store = createStore(rootReducer, middleware)
-
+export const store = createStore(rootReducer, middleware);

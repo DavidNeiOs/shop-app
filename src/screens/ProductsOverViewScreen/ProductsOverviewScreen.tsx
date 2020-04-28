@@ -1,20 +1,31 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { FlatList, Platform, Button } from "react-native";
+import {
+  FlatList,
+  Platform,
+  Button,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { useTypedSelector } from "../../store";
-import { ProductItem } from "../../components/ProductItem";
 import { ProductsNavProps } from "../../navigation/ProductNavigator";
+import { ProductItem } from "../../components/ProductItem";
 import { addToCart } from "../../store/cart/actions";
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { Colors } from "../../constants/colors";
+import { fetchProducts } from "../../store/product/actions";
 interface ProductsOverviewScreenProps
   extends ProductsNavProps<"ProductsOverview"> {}
 
 export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
   navigation,
 }: ProductsOverviewScreenProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
   const products = useTypedSelector(
     (state) => state.products.availableProducts
   );
@@ -43,12 +54,57 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
     });
   }, [navigation]);
 
+  const loadProducts = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(fetchProducts());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
   const handleSelect = (id: string, title: string) => {
     navigation.navigate("ProductDetails", {
       productId: id,
       productTitle: title,
     });
   };
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>An error occurred!</Text>
+        <Button
+          title="Try again"
+          onPress={loadProducts}
+          color={Colors.primary}
+        />
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isLoading && products.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text>No products found. Maybe start by adding some!</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -79,3 +135,7 @@ export const ProductsOverviewScreen: React.FC<ProductsOverviewScreenProps> = ({
     />
   );
 };
+
+const styles = StyleSheet.create({
+  centered: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
