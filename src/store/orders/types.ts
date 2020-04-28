@@ -19,6 +19,7 @@ export interface OrdersState {
 
 // Actions
 export const ADD_ORDER = "ADD_ORDER";
+export const SET_ORDERS = "SET_ORDERS";
 
 export interface AddOrderAction {
   type: typeof ADD_ORDER;
@@ -30,4 +31,9 @@ export interface AddOrderAction {
   };
 }
 
-export type OrdersActionTypes = AddOrderAction;
+export interface SetOrdersAction {
+  type: typeof SET_ORDERS;
+  orders: Order[];
+}
+
+export type OrdersActionTypes = AddOrderAction | SetOrdersAction;
