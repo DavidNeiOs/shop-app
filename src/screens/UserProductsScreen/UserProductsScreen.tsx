@@ -1,5 +1,11 @@
-import React from "react";
-import { Platform, FlatList, Button, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Platform,
+  FlatList,
+  Button,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useDispatch } from "react-redux";
 
@@ -9,12 +15,15 @@ import { useTypedSelector } from "../../store";
 import { AdminNavProps } from "../../navigation/AdminNavigator";
 import { Colors } from "../../constants/colors";
 import { deleteProduct } from "../../store/product/actions";
+import { Center } from "../../components/UI/Center";
 
 interface UserProductsScreenProps extends AdminNavProps<"UserProduct"> {}
 
 export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
   navigation,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
   const dispatch = useDispatch();
   const userProducts = useTypedSelector((state) => state.products.userProducts);
 
@@ -41,6 +50,12 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
     });
   }, [navigation]);
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error ocurred!", error, [{ text: "Okay" }]);
+    }
+  }, [error]);
+
   const handleSelect = (id: string) => {
     navigation.navigate("EditProduct", { productId: id });
   };
@@ -54,12 +69,29 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
       {
         text: "Yes",
         style: "destructive",
-        onPress: () => {
-          dispatch(deleteProduct(id));
+        onPress: async () => {
+          setLoading(true);
+          setError(null);
+          try {
+            await dispatch(deleteProduct(id));
+            setLoading(false);
+          } catch (err) {
+            setLoading(false);
+            setError(err.message);
+          }
         },
       },
     ]);
   };
+
+  if (loading) {
+    return (
+      <Center>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </Center>
+    );
+  }
+
   return (
     <FlatList
       data={userProducts}
