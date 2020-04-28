@@ -1,6 +1,5 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
 
 import { AdminNavigator } from "./AdminNavigator";
 import { ProductNavigator } from "./ProductNavigator";
@@ -19,52 +18,50 @@ const Drawer = createDrawerNavigator<ShopParamList>();
 
 export const ShopNavigator: React.FC<{}> = ({}) => {
   return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        drawerContentOptions={{
-          activeTintColor: Colors.primary,
+    <Drawer.Navigator
+      drawerContentOptions={{
+        activeTintColor: Colors.primary,
+      }}
+    >
+      <Drawer.Screen
+        name="Products"
+        component={ProductNavigator}
+        options={{
+          drawerIcon: (props) => (
+            <Ionicons
+              name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+              size={23}
+              color={props.color}
+            />
+          ),
         }}
-      >
-        <Drawer.Screen
-          name="Products"
-          component={ProductNavigator}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-                size={23}
-                color={props.color}
-              />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="Orders"
-          component={OrdersNavigator}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-list" : "ios-list"}
-                size={23}
-                color={props.color}
-              />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="Admin"
-          component={AdminNavigator}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-create" : "ios-create"}
-                size={23}
-                color={props.color}
-              />
-            ),
-          }}
-        />
-      </Drawer.Navigator>
-    </NavigationContainer>
+      />
+      <Drawer.Screen
+        name="Orders"
+        component={OrdersNavigator}
+        options={{
+          drawerIcon: (props) => (
+            <Ionicons
+              name={Platform.OS === "android" ? "md-list" : "ios-list"}
+              size={23}
+              color={props.color}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Admin"
+        component={AdminNavigator}
+        options={{
+          drawerIcon: (props) => (
+            <Ionicons
+              name={Platform.OS === "android" ? "md-create" : "ios-create"}
+              size={23}
+              color={props.color}
+            />
+          ),
+        }}
+      />
+    </Drawer.Navigator>
   );
 };
