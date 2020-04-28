@@ -1,31 +1,33 @@
 export interface OrderItem {
-  productId: string
-  productTitle: string
-  productPrice: number
-  quantity: number
-  sum: number
+  productId: string;
+  productTitle: string;
+  productPrice: number;
+  quantity: number;
+  sum: number;
 }
 
 export interface Order {
-  id: string
-  items: OrderItem[]
-  totalAmount: number
-  date: Date
+  id: string;
+  items: OrderItem[];
+  totalAmount: number;
+  date: Date;
 }
 
 export interface OrdersState {
-  orders: Order[]
+  orders: Order[];
 }
 
 // Actions
-export const ADD_ORDER = "ADD_ORDER"
+export const ADD_ORDER = "ADD_ORDER";
 
 export interface AddOrderAction {
-  type: typeof ADD_ORDER
+  type: typeof ADD_ORDER;
   orderData: {
-    items: OrderItem[],
-    amount: number
-  }
+    id: string;
+    items: OrderItem[];
+    amount: number;
+    date: Date;
+  };
 }
 
-export type OrdersActionTypes = AddOrderAction
+export type OrdersActionTypes = AddOrderAction;
