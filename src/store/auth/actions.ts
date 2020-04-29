@@ -36,7 +36,7 @@ export const signup = (
   password: string
 ): ThunkResult<Promise<any>> => async (dispatch) => {
   const response = await fetch(
-    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC0Cyni2CQXk09zU6bQCKRUmMyOd_RCQrI",
+    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[ADD_YOUR_KEY_HERE]",
     {
       method: "POST",
       headers: {
@@ -79,7 +79,7 @@ export const login = (
   password: string
 ): ThunkResult<Promise<any>> => async (dispatch) => {
   const response = await fetch(
-    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC0Cyni2CQXk09zU6bQCKRUmMyOd_RCQrI",
+    "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[ADD_YOUR_KEY_HERE]",
     {
       method: "POST",
       headers: {
