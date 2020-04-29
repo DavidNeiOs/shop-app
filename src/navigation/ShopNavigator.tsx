@@ -1,17 +1,17 @@
 import React from "react";
+import { Platform, SafeAreaView, Button, View } from "react-native";
 import {
   createDrawerNavigator,
   DrawerItemList,
 } from "@react-navigation/drawer";
+import { useDispatch } from "react-redux";
 
 import { AdminNavigator } from "./AdminNavigator";
 import { ProductNavigator } from "./ProductNavigator";
 import { OrdersNavigator } from "./OrdersNavigator";
 import { Colors } from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Platform, SafeAreaView, Button, View } from "react-native";
 import { logout } from "../store/auth/actions";
-import { useDispatch } from "react-redux";
 
 export type ShopParamList = {
   Orders: undefined;

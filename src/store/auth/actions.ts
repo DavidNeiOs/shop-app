@@ -14,12 +14,19 @@ const saveDataToStorage = (
   );
 };
 
-export const authenticate = (token: string, userId: string): AuthActions => {
-  return {
+let timer: number;
+
+export const authenticate = (
+  token: string,
+  userId: string,
+  expryTime: number
+): ThunkResult<Promise<any>> => async (dispatch) => {
+  dispatch(setLogoutTimer(expryTime));
+  dispatch({
     type: AUTHENTICATE,
     userId,
     token,
-  };
+  });
 };
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, AuthActions>;
@@ -54,16 +61,23 @@ export const signup = (
 
   const resData = await response.json();
 
-  dispatch(authenticate(resData.idToken, resData.localId));
+  dispatch(
+    authenticate(
+      resData.idToken,
+      resData.localId,
+      parseInt(resData.expiresIn) * 1000
+    )
+  );
   const expirationDate = new Date(
     new Date().getTime() + parseInt(resData.expiresIn) * 1000
   );
   saveDataToStorage(resData.idToken, resData.localId, expirationDate);
 };
 
-export const login = (email: string, password: string) => async (
-  dispatch: ThunkDispatch<{}, undefined, AuthActions>
-) => {
+export const login = (
+  email: string,
+  password: string
+): ThunkResult<Promise<any>> => async (dispatch) => {
   const response = await fetch(
     "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC0Cyni2CQXk09zU6bQCKRUmMyOd_RCQrI",
     {
@@ -90,7 +104,13 @@ export const login = (email: string, password: string) => async (
 
   const resData = await response.json();
 
-  dispatch(authenticate(resData.idToken, resData.localId));
+  dispatch(
+    authenticate(
+      resData.idToken,
+      resData.localId,
+      parseInt(resData.expiresIn) * 1000
+    )
+  );
   const expirationDate = new Date(
     new Date().getTime() + parseInt(resData.expiresIn) * 1000
   );
@@ -98,9 +118,25 @@ export const login = (email: string, password: string) => async (
 };
 
 export const logout = (): AuthActions => {
+  clearLogoutTimer();
+  AsyncStorage.removeItem("userData");
   return {
     type: LOGOUT,
   };
+};
+
+export const setLogoutTimer = (
+  expirationTime: number
+): ThunkResult<Promise<any>> => async (dispatch) => {
+  timer = setTimeout(() => {
+    dispatch(logout());
+  }, expirationTime);
+};
+
+export const clearLogoutTimer = () => {
+  if (timer) {
+    clearTimeout(timer);
+  }
 };
 
 export const setDidTryAl = (): AuthActions => {

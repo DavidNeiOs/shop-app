@@ -26,7 +26,9 @@ export const StartupScreen: React.FC<StartupScreenProps> = ({}) => {
         return;
       }
 
-      dispatch(authenticate(token, userId));
+      const expirationTime = expirationDate.getTime() - new Date().getTime();
+
+      dispatch(authenticate(token, userId, expirationTime));
     };
 
     tryLogin();
