@@ -1,6 +1,26 @@
+import { AsyncStorage } from "react-native";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
-import { AuthActions, SIGN_UP, LOG_IN } from "./types";
+import { AuthActions, SET_DID_TRY_AL, AUTHENTICATE } from "./types";
 import { RootState } from "..";
+
+const saveDataToStorage = (
+  token: string,
+  userId: string,
+  expirationDate: Date
+) => {
+  AsyncStorage.setItem(
+    "userData",
+    JSON.stringify({ token, userId, expiryDate: expirationDate.toISOString() })
+  );
+};
+
+export const authenticate = (token: string, userId: string): AuthActions => {
+  return {
+    type: AUTHENTICATE,
+    userId,
+    token,
+  };
+};
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, AuthActions>;
 
@@ -34,7 +54,11 @@ export const signup = (
 
   const resData = await response.json();
 
-  dispatch({ type: SIGN_UP, token: resData.idToken, userId: resData.localId });
+  dispatch(authenticate(resData.idToken, resData.localId));
+  const expirationDate = new Date(
+    new Date().getTime() + parseInt(resData.expiresIn) * 1000
+  );
+  saveDataToStorage(resData.idToken, resData.localId, expirationDate);
 };
 
 export const login = (email: string, password: string) => async (
@@ -66,5 +90,15 @@ export const login = (email: string, password: string) => async (
 
   const resData = await response.json();
 
-  dispatch({ type: LOG_IN, token: resData.idToken, userId: resData.localId });
+  dispatch(authenticate(resData.idToken, resData.localId));
+  const expirationDate = new Date(
+    new Date().getTime() + parseInt(resData.expiresIn) * 1000
+  );
+  saveDataToStorage(resData.idToken, resData.localId, expirationDate);
+};
+
+export const setDidTryAl = (): AuthActions => {
+  return {
+    type: SET_DID_TRY_AL,
+  };
 };

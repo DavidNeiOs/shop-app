@@ -1,21 +1,30 @@
-import { AuthState, AuthActions, LOG_IN, SIGN_UP } from "./types";
+import {
+  AuthState,
+  AuthActions,
+  LOG_IN,
+  SIGN_UP,
+  SET_DID_TRY_AL,
+  AUTHENTICATE,
+} from "./types";
 
 const initialState: AuthState = {
   token: null,
   userId: null,
+  didTryAutoLogin: false,
 };
 
 export default (state = initialState, action: AuthActions) => {
   switch (action.type) {
-    case LOG_IN:
+    case AUTHENTICATE:
       return {
         token: action.token,
         userId: action.userId,
+        didTryAutoLogin: true,
       };
-    case SIGN_UP:
+    case SET_DID_TRY_AL:
       return {
-        token: action.token,
-        userId: action.userId,
+        ...state,
+        didTryAutoLogin: true,
       };
     default:
       return state;
