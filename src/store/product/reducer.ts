@@ -7,13 +7,12 @@ import {
   UPDATE_PRODUCT,
   SET_PRODUCTS,
 } from "./types";
-import PRODUCTS from "../../data/products";
 import Product from "../../models/product";
 import reactotron from "../../../ReactotronConfig";
 
 const initialState: ProductsState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 export default (state = initialState, action: ProductActionTypes) => {
@@ -21,7 +20,9 @@ export default (state = initialState, action: ProductActionTypes) => {
     case SET_PRODUCTS:
       return {
         availableProducts: action.products,
-        userProducts: action.products.filter((prod) => prod.ownerId === "u1"),
+        userProducts: action.products.filter(
+          (prod) => prod.ownerId === action.userId
+        ),
       };
     case ADD_PRODUCT:
       return {
@@ -41,7 +42,7 @@ export default (state = initialState, action: ProductActionTypes) => {
     case CREATE_PRODUCT:
       const newProduct = new Product(
         action.payload.id,
-        "u1",
+        action.payload.ownerId,
         action.payload.title,
         action.payload.imageUrl,
         action.payload.imageUrl,

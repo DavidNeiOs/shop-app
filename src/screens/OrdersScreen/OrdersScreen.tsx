@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Platform, FlatList, ActivityIndicator } from "react-native";
+import { Platform, FlatList, ActivityIndicator, Text } from "react-native";
 import { useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import { CustomHeaderButton } from "../../components/UI/HeaderButton";
 import { Center } from "../../components/UI/Center";
-import { useTypedSelector } from "../../store";
+import { useTypedSelector, RootState } from "../../store";
 import { OrdersNavProps } from "../../navigation/OrdersNavigator";
 import { OrderItem } from "../../components/OrderItem";
 import { fetchOrders } from "../../store/orders/actions";
 import { ThunkDispatch } from "redux-thunk";
-import { OrdersState, OrdersActionTypes } from "../../store/orders/types";
+import { OrdersActionTypes } from "../../store/orders/types";
 import { Colors } from "../../constants/colors";
 
 interface OrdersScreenProps extends OrdersNavProps<"Orders"> {}
@@ -19,7 +19,7 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const orders = useTypedSelector((state) => state.orders.orders);
   const dispatch = useDispatch<
-    ThunkDispatch<OrdersState, undefined, OrdersActionTypes>
+    ThunkDispatch<RootState, undefined, OrdersActionTypes>
   >();
 
   useEffect(() => {
@@ -47,6 +47,14 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ navigation }) => {
     return (
       <Center>
         <ActivityIndicator size="large" color={Colors.primary} />
+      </Center>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <Center>
+        <Text>No orders found. Start ordering now 💸</Text>
       </Center>
     );
   }

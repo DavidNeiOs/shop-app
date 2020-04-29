@@ -37,6 +37,7 @@ export interface CreateProductAction {
     description: string;
     imageUrl: string;
     price: number;
+    ownerId: string;
   };
 }
 
@@ -53,6 +54,7 @@ export interface UpdateProductAction {
 export interface SetProductsAction {
   type: typeof SET_PRODUCTS;
   products: Product[];
+  userId: string;
 }
 
 // Add more actions like this | DeleteProductAction | UpdateProd...

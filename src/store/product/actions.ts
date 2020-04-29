@@ -1,5 +1,5 @@
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction } from "redux";
+import { ThunkAction } from "redux-thunk";
+
 import {
   Product as IProduct,
   ADD_PRODUCT,
@@ -8,11 +8,11 @@ import {
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   SET_PRODUCTS,
-  SetProductsAction,
-  UpdateProductAction,
-  DeleteProductAction,
 } from "./types";
 import Product from "../../models/product";
+import { RootState } from "..";
+
+type ThunkResult<R> = ThunkAction<R, RootState, undefined, ProductActionTypes>;
 
 export function addProduct(product: IProduct): ProductActionTypes {
   return {
@@ -21,11 +21,13 @@ export function addProduct(product: IProduct): ProductActionTypes {
   };
 }
 
-export const deleteProduct = (id: string) => async (
-  dispatch: ThunkDispatch<{}, {}, DeleteProductAction>
+export const deleteProduct = (id: string): ThunkResult<Promise<any>> => async (
+  dispatch,
+  getState
 ) => {
+  const token = getState().auth.token;
   const response = await fetch(
-    `https://rn-complete-4c566.firebaseio.com/products/${id}.json`,
+    `https://rn-complete-4c566.firebaseio.com/products/${id}.json?auth=${token}`,
     {
       method: "DELETE",
     }
@@ -45,9 +47,10 @@ export const createProduct = (
   description: string,
   imageUrl: string,
   price: number
-) => async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+): ThunkResult<Promise<any>> => async (dispatch, getState) => {
+  const auth = getState().auth;
   const response = await fetch(
-    "https://rn-complete-4c566.firebaseio.com/products.json",
+    `https://rn-complete-4c566.firebaseio.com/products.json?auth=${auth.token}`,
     {
       method: "POST",
       headers: {
@@ -58,6 +61,7 @@ export const createProduct = (
         description,
         imageUrl,
         price,
+        ownerId: auth.userId,
       }),
     }
   );
@@ -72,6 +76,7 @@ export const createProduct = (
       description,
       imageUrl,
       price,
+      ownerId: auth.userId!,
     },
   });
 };
@@ -81,9 +86,10 @@ export const updateProduct = (
   title: string,
   description: string,
   imageUrl: string
-) => async (dispatch: ThunkDispatch<{}, {}, UpdateProductAction>) => {
+): ThunkResult<Promise<any>> => async (dispatch, getState) => {
+  const token = getState().auth.token;
   const response = await fetch(
-    `https://rn-complete-4c566.firebaseio.com/products/${id}.json`,
+    `https://rn-complete-4c566.firebaseio.com/products/${id}.json?auth=${token}`,
     {
       method: "PATCH",
       headers: {
@@ -112,9 +118,11 @@ export const updateProduct = (
   });
 };
 
-export const fetchProducts = () => async (
-  dispatch: ThunkDispatch<{}, {}, SetProductsAction>
+export const fetchProducts = (): ThunkResult<Promise<any>> => async (
+  dispatch,
+  getState
 ) => {
+  const userId = getState().auth.userId;
   try {
     const response = await fetch(
       "https://rn-complete-4c566.firebaseio.com/products.json"
@@ -131,7 +139,7 @@ export const fetchProducts = () => async (
       loadedProducts.push(
         new Product(
           key,
-          "u1",
+          resData[key].ownerId,
           resData[key].title,
           resData[key].imageUrl,
           resData[key].description,
@@ -139,7 +147,7 @@ export const fetchProducts = () => async (
         )
       );
     }
-    dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+    dispatch({ type: SET_PRODUCTS, products: loadedProducts, userId: userId! });
   } catch (err) {
     throw err;
   }

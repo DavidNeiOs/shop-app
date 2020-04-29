@@ -2,22 +2,22 @@ import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import {
   ADD_ORDER,
   OrderItem,
-  AddOrderAction,
-  SetOrdersAction,
   SET_ORDERS,
   Order,
-  OrdersState,
+  OrdersActionTypes,
 } from "./types";
-import { Action } from "redux";
+import { RootState } from "..";
 
-type ThunkResult<R> = ThunkAction<R, OrdersState, undefined, Action>;
+type ThunkResult<R> = ThunkAction<R, RootState, undefined, OrdersActionTypes>;
 
 export const fetchOrders = (): ThunkResult<Promise<any>> => async (
-  dispatch: ThunkDispatch<OrdersState, undefined, SetOrdersAction>
+  dispatch,
+  getState
 ) => {
+  const auth = getState().auth;
   try {
     const response = await fetch(
-      "https://rn-complete-4c566.firebaseio.com/orders/u1.json"
+      `https://rn-complete-4c566.firebaseio.com/orders/${auth.userId}.json?auth=${auth.token}`
     );
 
     if (!response.ok) {
@@ -44,12 +44,14 @@ export const fetchOrders = (): ThunkResult<Promise<any>> => async (
   }
 };
 
-export const addOrder = (cartItems: OrderItem[], totalAmount: number) => async (
-  dispatch: ThunkDispatch<{}, {}, AddOrderAction>
-) => {
+export const addOrder = (
+  cartItems: OrderItem[],
+  totalAmount: number
+): ThunkResult<Promise<any>> => async (dispatch, getState) => {
   const date = new Date();
+  const auth = getState().auth;
   const response = await fetch(
-    "https://rn-complete-4c566.firebaseio.com/orders/u1.json",
+    `https://rn-complete-4c566.firebaseio.com/orders/${auth.userId}.json?auth=${auth.token}`,
     {
       method: "POST",
       headers: {

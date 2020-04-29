@@ -5,6 +5,7 @@ import {
   Button,
   Alert,
   ActivityIndicator,
+  Text,
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useDispatch } from "react-redux";
@@ -88,6 +89,14 @@ export const UserProductsScreen: React.FC<UserProductsScreenProps> = ({
     return (
       <Center>
         <ActivityIndicator size="large" color={Colors.primary} />
+      </Center>
+    );
+  }
+
+  if (userProducts.length === 0) {
+    return (
+      <Center>
+        <Text>No products found. Start creating 🎩</Text>
       </Center>
     );
   }

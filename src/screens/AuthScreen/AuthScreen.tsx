@@ -98,8 +98,8 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({}) => {
       }
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

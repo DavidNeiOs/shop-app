@@ -5,8 +5,6 @@ import {
   Platform,
   Button,
   ActivityIndicator,
-  View,
-  StyleSheet,
   Text,
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";

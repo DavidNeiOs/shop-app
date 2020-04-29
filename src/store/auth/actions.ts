@@ -1,9 +1,13 @@
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import { AuthActions, SIGN_UP, LOG_IN } from "./types";
+import { RootState } from "..";
 
-export const signup = (email: string, password: string) => async (
-  dispatch: ThunkDispatch<{}, undefined, AuthActions>
-) => {
+type ThunkResult<R> = ThunkAction<R, RootState, undefined, AuthActions>;
+
+export const signup = (
+  email: string,
+  password: string
+): ThunkResult<Promise<any>> => async (dispatch) => {
   const response = await fetch(
     "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC0Cyni2CQXk09zU6bQCKRUmMyOd_RCQrI",
     {
@@ -30,7 +34,7 @@ export const signup = (email: string, password: string) => async (
 
   const resData = await response.json();
 
-  dispatch({ type: SIGN_UP });
+  dispatch({ type: SIGN_UP, token: resData.idToken, userId: resData.localId });
 };
 
 export const login = (email: string, password: string) => async (
@@ -62,5 +66,5 @@ export const login = (email: string, password: string) => async (
 
   const resData = await response.json();
 
-  dispatch({ type: LOG_IN });
+  dispatch({ type: LOG_IN, token: resData.idToken, userId: resData.localId });
 };

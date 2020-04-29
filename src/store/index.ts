@@ -6,8 +6,10 @@ import Reactotron from "../../ReactotronConfig";
 import productsReducer from "./product/reducer";
 import cartReducer from "./cart/reducers";
 import ordersReducer from "./orders/reducer";
+import authReducer from "./auth/reducer";
 
 const rootReducer = combineReducers({
+  auth: authReducer,
   products: productsReducer,
   cart: cartReducer,
   orders: ordersReducer,
