@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
-import { AuthActions, SET_DID_TRY_AL, AUTHENTICATE } from "./types";
+import { AuthActions, SET_DID_TRY_AL, AUTHENTICATE, LOGOUT } from "./types";
 import { RootState } from "..";
 
 const saveDataToStorage = (
@@ -95,6 +95,12 @@ export const login = (email: string, password: string) => async (
     new Date().getTime() + parseInt(resData.expiresIn) * 1000
   );
   saveDataToStorage(resData.idToken, resData.localId, expirationDate);
+};
+
+export const logout = (): AuthActions => {
+  return {
+    type: LOGOUT,
+  };
 };
 
 export const setDidTryAl = (): AuthActions => {

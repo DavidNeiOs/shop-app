@@ -1,12 +1,17 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 
 import { AdminNavigator } from "./AdminNavigator";
 import { ProductNavigator } from "./ProductNavigator";
 import { OrdersNavigator } from "./OrdersNavigator";
 import { Colors } from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Platform } from "react-native";
+import { Platform, SafeAreaView, Button, View } from "react-native";
+import { logout } from "../store/auth/actions";
+import { useDispatch } from "react-redux";
 
 export type ShopParamList = {
   Orders: undefined;
@@ -17,10 +22,26 @@ export type ShopParamList = {
 const Drawer = createDrawerNavigator<ShopParamList>();
 
 export const ShopNavigator: React.FC<{}> = ({}) => {
+  const dispatch = useDispatch();
+
   return (
     <Drawer.Navigator
       drawerContentOptions={{
         activeTintColor: Colors.primary,
+      }}
+      drawerContent={(props) => {
+        return (
+          <View style={{ flex: 1, paddingTop: 20 }}>
+            <SafeAreaView>
+              <DrawerItemList {...props} />
+              <Button
+                title="Log out"
+                color={Colors.primary}
+                onPress={() => dispatch(logout())}
+              />
+            </SafeAreaView>
+          </View>
+        );
       }}
     >
       <Drawer.Screen

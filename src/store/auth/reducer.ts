@@ -1,10 +1,9 @@
 import {
   AuthState,
   AuthActions,
-  LOG_IN,
-  SIGN_UP,
   SET_DID_TRY_AL,
   AUTHENTICATE,
+  LOGOUT,
 } from "./types";
 
 const initialState: AuthState = {
@@ -25,6 +24,12 @@ export default (state = initialState, action: AuthActions) => {
       return {
         ...state,
         didTryAutoLogin: true,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        token: null,
+        userId: null,
       };
     default:
       return state;
